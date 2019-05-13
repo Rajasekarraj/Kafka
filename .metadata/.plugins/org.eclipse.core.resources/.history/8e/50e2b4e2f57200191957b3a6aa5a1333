@@ -1,0 +1,11 @@
+package com.kafka.example.stream;
+
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
+
+public class Streaming {
+	public void printStream() { 
+		TwitterStream twitterStream = new TwitterStreamFactory().createInstance(); 
+		twitterStream.addListener(listener); // sample() method internally creates a thread which manipulates TwitterStream // and calls these adequate listener methods continuously. twitterStream.sample();
+	}
+}

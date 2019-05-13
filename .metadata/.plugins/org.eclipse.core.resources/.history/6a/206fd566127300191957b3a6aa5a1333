@@ -1,0 +1,124 @@
+package com.kafka.example.stream;
+
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+import twitter4j.StallWarning;
+import twitter4j.Status;
+import twitter4j.StatusDeletionNotice;
+import twitter4j.StatusListener;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
+
+@RestController
+public class ProducerController {
+	
+	@Autowired
+	NewTopic zilkerTopic;
+	
+	@Autowired
+	KafkaTemplate<String, String> kafkaTemplate;
+	
+	Twitter twitter = TwitterFactory.getSingleton();
+	StatusListener listener = null;
+	
+	
+	public ProducerController() {
+
+		listener = new StatusListener() {
+
+			@Override
+			public void onException(Exception ex) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onStatus(Status status) {
+				System.out.println(status.getUser().getName() + " : " + status.getText());
+				System.out.println("-------------------------------------");
+				System.out.println(kafkaTemplate);
+				System.out.println("-------------------------------------");
+				kafkaTemplate.send(zilkerTopic.name(), status.getText());
+			}
+
+			@Override
+			public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onScrubGeo(long userId, long upToStatusId) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onStallWarning(StallWarning warning) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
+
+		
+	}
+	
+
+	@GetMapping("/produce/{message}")
+	public String produceMessage(@PathVariable("message") String message) {
+		for (int i = 0; i < 10; i++) {
+			repeatProcess(message);
+		}
+		return "Produced Successfully - " + message;
+	}
+	
+	public void repeatProcess(String message) {
+		ListenableFuture<SendResult<String, String>> messageResultObject = kafkaTemplate.send(zilkerTopic.name(), message);
+		messageResultObject.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+			@Override
+	        public void onSuccess(SendResult<String, String> result) {
+	            System.out.println("Sent message=[" + message + 
+	              "] with offset=[" + result.getRecordMetadata().offset() + "]");
+	        }
+	        @Override
+	        public void onFailure(Throwable ex) {
+	            System.out.println("Unable to send message=["
+	              + message + "] due to : " + ex.getMessage());
+	        }
+		});
+	}
+	
+	
+	@GetMapping("/stream") 
+	public String streamTwitterFeed() {
+		printStream();
+		return "Started Streaming twitter feed";
+	}
+	
+	public void printStream() {
+
+		TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
+		twitterStream.addListener(listener);
+		// sample() method internally creates a thread which manipulates TwitterStream
+		// and calls these adequate listener methods continuously.
+		twitterStream.sample();
+	}
+	
+}

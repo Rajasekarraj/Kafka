@@ -1,0 +1,5 @@
+package com.kafka.example.stream;
+
+public class Streaming {
+
+}

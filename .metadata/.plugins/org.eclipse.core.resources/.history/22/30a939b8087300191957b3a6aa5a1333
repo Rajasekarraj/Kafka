@@ -1,0 +1,9 @@
+package com.kafka.example.lifecycle;
+
+@Component 
+public class Lifecycle implements SmartLifecycle {
+
+@Override
+public void start() {
+    logger.debug("Service starting...");
+}

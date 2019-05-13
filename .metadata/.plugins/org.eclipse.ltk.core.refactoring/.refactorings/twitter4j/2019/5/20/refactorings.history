@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete element from project &apos;twitter4j&apos;&#x0A;- Original project: &apos;twitter4j&apos;&#x0A;- Original element: &apos;twitter4j/src/main/java/com.kafka.example.lifecycle&apos;" description="Delete element" element1="/src\/main\/java&lt;com.kafka.example.lifecycle" elements="1" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1557650974080" subPackages="false" version="1.0"/>
+</session>

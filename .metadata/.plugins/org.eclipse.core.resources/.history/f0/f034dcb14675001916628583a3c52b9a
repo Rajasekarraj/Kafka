@@ -1,0 +1,20 @@
+package com.kafka.example.Controller;
+
+import java.util.Properties;
+
+import org.apache.kafka.streams.StreamsConfig;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class StreamController {
+	
+	@GetMapping("/streamTopic")
+	public void getFromTopic() {
+		String inputTopic = "Kafka_testTopic";
+		String bootstrapServers = "localhost:9092";
+		Properties streamsConfiguration = new Properties();
+		streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, "wordcount-live-test");
+		streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+	}
+}

@@ -1,0 +1,5 @@
+package com.kafka.example.kafkaconsumer.listener;
+
+public class KafkaConsumer {
+
+}

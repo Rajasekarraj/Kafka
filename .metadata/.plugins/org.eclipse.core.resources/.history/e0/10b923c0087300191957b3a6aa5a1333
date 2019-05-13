@@ -1,0 +1,30 @@
+package com.kafka.example.lifecycle;
+
+import org.springframework.context.SmartLifecycle;
+import org.springframework.stereotype.Component;
+
+@Component 
+public class Lifecycle implements SmartLifecycle {
+
+@Override
+public void start() {
+    System.out.println();
+}
+
+@Override
+public void stop() {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public boolean isRunning() {
+	// TODO Auto-generated method stub
+	return false;
+}
+
+@Override
+public int getPhase() {
+    return Integer.MAX_VALUE;
+ }
+}
